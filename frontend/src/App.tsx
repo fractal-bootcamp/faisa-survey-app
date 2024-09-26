@@ -1,64 +1,102 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Survey from "./components/Survey";
 
 const serverURL = "http://localhost:3000";
 
-type Survey = { name: string, question: string, answer: string };
+type SurveyTypes = {
+  surveyName: string
+  surveyQuestions: string[]
+  personName: string
+}
 
 function App() {
-  const [name, setName] = useState("");
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
-  const [questions, setQuestions] = useState<Survey[]>([]);
+  const [surveyName, setSurveyName] = useState<string>("")
+  const [surveyQuestions, setSurveyQuestions] = useState<string[]>([])
+  const [personName, setPersonName] = useState<string>("")
+  const [completeSurveys, setCompleteSurveys] = useState<SurveyTypes[]>([])
 
-  const onFormSubmit = () => {
-    axios.post(serverURL + "/new/surveys", { name: name, question: question, answer: answer });
-  };
+  const fetchSurveys = async () => {
+    try {
+      const res = await axios.get(`${serverURL}/surveys`)
+      console.log(res.data);
+      setCompleteSurveys(res.data)
+    } catch (err) {
+      console.error("Error fetching surveys", err);
+    }
+  }
 
   useEffect(() => {
-    const fetch = async () => {
-      const res = await axios.get(serverURL + "/surveys");
-      console.log(res.data);
-      setQuestions(res.data);
-    };
-
-    // make request
-    fetch();
+    fetchSurveys();
   }, []);
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const surveyData = {
+      surveyName,
+      surveyQuestions,
+      personName
+    }
+
+    axios
+      .post(`${serverURL}/new/surveys`, surveyData)
+      .then((res) => {
+        console.log(res.data)
+        setSurveyName("")
+        setSurveyQuestions([])
+        setPersonName("")
+        fetchSurveys()
+      })
+      .catch((err) => console.error(err)
+      )
+  }
+
+  const handleAddQuestion = () => {
+    setSurveyQuestions([...surveyQuestions, ""])
+  }
+
+  const handleQuestionsChange = (index: number, value: string) => {
+    const updatedQuestions = [...surveyQuestions]
+    updatedQuestions[index] = value
+    setSurveyQuestions(updatedQuestions)
+  }
 
   return (
     <div>
       <h1>Survey App</h1>
-      <form
-        style={{ display: "flex", flexDirection: "column" }}
-        onSubmit={onFormSubmit}
-      >
-        Name:
-        <input value={name} onChange={(e) => setName(e.target.value)} />
-        <br />
-        Question:
-        <input value={question} onChange={(e) => setQuestion(e.target.value)} />
-        <br />
-        Answer:
-        <input value={answer} onChange={(e) => setAnswer(e.target.value)} />
-        <br />
-        <button type="submit">Create Survey</button>
-      </form>
+      <Survey
+        surveyName={surveyName}
+        surveyQuestions={surveyQuestions}
+        personName={personName}
+        handleSurveyName={setSurveyName}
+        handlePersonName={setPersonName}
+        handleAddQuestion={handleAddQuestion}
+        handleFormSubmit={handleFormSubmit}
+        handleQuestionsChange={handleQuestionsChange}
+      />
       <br />
-      {questions.map((qs) => {
+      <h1>List of Surveys</h1>
+      {completeSurveys.map((survey, index) => {
         return (
-          <div style={{ marginBottom: "8px", padding: "8px", border: "1px solid" }}>
-            <strong>By: </strong>
-            {qs.name}
+          <div key={index} style={{ marginBottom: "18px", padding: "4px 8px" }}>
+            <strong>Survey Name: </strong>
+            {survey.surveyName}
             <br />
-            <strong>Question: </strong>
-            {qs.question}
+            <strong>Survey Questions: </strong>
+            <ul>
+              {survey?.surveyQuestions?.map((question, indx) => (
+                <li key={indx}>
+                  {question}
+                </li>
+              ))}
+            </ul>
             <br />
-            <strong>Answer: </strong>
-            {qs.answer}
+            <strong>Done by : </strong>
+            {survey.personName}
             <br />
           </div>
-        );
+        )
       })}
     </div>
   );

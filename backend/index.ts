@@ -3,7 +3,8 @@ import path from "path";
 import cors from "cors";
 
 const app = express();
-app.use(cors());
+const PORT = 3000
+
 
 const getNestedValue = (obj: any, path: string): any => {
   return path.split(".").reduce((acc, key) => acc && acc[key], obj);
@@ -66,42 +67,49 @@ const injectTemplateVariables = (
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json())
+app.use(cors());
 
-// In-memory storage for messages
-let messages: { name: string; content: string }[] = [];
+// In-memory storage for surveys
+let surveys: { name: string; question: string; answer: string }[] = [];
 
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
+  res.send("<h1>I am alive</h1>")
+})
+
+
+app.get("/home", (_req, res) => {
   const templatePath = path.join(__dirname, "templates", "index.html");
   const fs = require("fs");
 
   const template = fs.readFileSync(templatePath, "utf8");
 
   const html = injectTemplateVariables(template, {
-    title: "Message Board",
-    heading: "Welcome to the Message Board",
-    messages,
+    title: "Survey App",
+    heading: "Welcome to the Survey App",
+    surveys,
   });
   res.send(html);
 });
 
-app.get("/messages/:name", (req, res) => {
-  const messagesFromName = messages.filter((message) => {
-    return message.name === req.params.name;
+
+app.get("/surveys/:name", (req, res) => {
+  const surveysFromName = surveys.filter((survey) => {
+    return survey.name === req.params.name;
   });
 
-  res.json(messagesFromName);
+  res.json(surveysFromName);
 });
 
-app.get("/messages/", (req, res) => {
-  res.json(messages);
+app.get("/surveys/", (_req, res) => {
+  res.json(surveys);
 });
 
-app.post("/submit", (req, res) => {
-  const { name, message } = req.body;
+app.post("/new/surveys", (req, res) => {
+  const { name, question, answer } = req.body;
 
-  messages.push({ name, content: message });
+  surveys.push({ name, question, answer });
 
   res.redirect("/");
 });
 
-app.listen(3000, () => console.log("Server running on port 3000"));
+app.listen(PORT, () => console.log(`Server running on port: http:localhost:${PORT}`));

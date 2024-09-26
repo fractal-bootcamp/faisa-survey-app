@@ -1,25 +1,25 @@
 import { useEffect, useState } from "react";
-import "./App.css";
 import axios from "axios";
 
 const serverURL = "http://localhost:3000";
 
-type Message = { content: string; name: string };
+type Survey = { name: string, question: string, answer: string };
 
 function App() {
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
   const [name, setName] = useState("");
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [questions, setQuestions] = useState<Survey[]>([]);
 
   const onFormSubmit = () => {
-    axios.post(serverURL + "/submit", { name: name, message: message });
+    axios.post(serverURL + "/new/surveys", { name: name, question: question, answer: answer });
   };
 
   useEffect(() => {
     const fetch = async () => {
-      const res = await axios.get(serverURL + "/messages");
+      const res = await axios.get(serverURL + "/surveys");
       console.log(res.data);
-      setMessages(res.data);
+      setQuestions(res.data);
     };
 
     // make request
@@ -28,23 +28,35 @@ function App() {
 
   return (
     <div>
+      <h1>Survey App</h1>
       <form
         style={{ display: "flex", flexDirection: "column" }}
         onSubmit={onFormSubmit}
       >
-        Name
+        Name:
         <input value={name} onChange={(e) => setName(e.target.value)} />
-        Message
-        <input value={message} onChange={(e) => setMessage(e.target.value)} />
-        <button type="submit">SEND MESSAGE</button>
+        <br />
+        Question:
+        <input value={question} onChange={(e) => setQuestion(e.target.value)} />
+        <br />
+        Answer:
+        <input value={answer} onChange={(e) => setAnswer(e.target.value)} />
+        <br />
+        <button type="submit">Create Survey</button>
       </form>
-      {messages.map((msg) => {
+      <br />
+      {questions.map((qs) => {
         return (
-          <div>
-            By:
-            {msg.name}
+          <div style={{ marginBottom: "8px", padding: "8px", border: "1px solid" }}>
+            <strong>By: </strong>
+            {qs.name}
             <br />
-            {msg.content}
+            <strong>Question: </strong>
+            {qs.question}
+            <br />
+            <strong>Answer: </strong>
+            {qs.answer}
+            <br />
           </div>
         );
       })}

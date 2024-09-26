@@ -40,4 +40,4 @@ app.post("/new/surveys", (req, res) => {
   res.redirect("/");
 });
 
-app.listen(PORT, () => console.log(`Server running on port: http:localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port: http://localhost:${PORT}`));

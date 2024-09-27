@@ -13,6 +13,7 @@ app.use(cors());
 
 // In-memory storage for surveys
 let surveys: { surveyName: string; surveyQuestions: string[]; personName: string }[] = [];
+let surveySubmission: { surveyAnswer: string[] }[] = []
 
 app.get("/", (_req, res) => {
   res.send("<h1>I am alive</h1>")
@@ -21,6 +22,10 @@ app.get("/", (_req, res) => {
 app.get("/surveys/", (_req, res) => {
   res.json(surveys);
 });
+
+app.get("/surveys/submissions", (_req, res) => {
+  res.json(surveySubmission)
+})
 
 app.get("/surveys/:name", (req, res) => {
   const surveysFromName = surveys.filter((survey) => {
@@ -39,5 +44,14 @@ app.post("/new/surveys", (req, res) => {
 
   res.redirect("/");
 });
+
+app.post("/new/surveys/submissions", (req, res) => {
+  console.log(req.body)
+  const { surveyAnswer } = req.body
+
+  surveySubmission.push({ surveyAnswer })
+
+  res.redirect("/")
+})
 
 app.listen(PORT, () => console.log(`Server running on port: http://localhost:${PORT}`));

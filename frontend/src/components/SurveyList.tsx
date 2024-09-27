@@ -1,45 +1,34 @@
+import SurveyListItem from "./SurveyListItem"
+
+type Survey = {
+    surveyName: string
+    surveyQuestions: string[]
+    personName: string
+}
 interface SurveyListProps {
-    completeSurveys: {
-        surveyName: string
-        surveyQuestions: string[]
-        personName: string
-    }[]
+    completeSurveys: Survey[]
 }
 
 const SurveyList: React.FC<SurveyListProps> = ({ completeSurveys }) => {
 
     return (
-        <div className="p-6 bg-slate-50 rounded-lg shadow-md max-w-lg mx-auto my-8">
-            <h1 className="text-2xl font-semibold">
+        <div className="p-6 bg-slate-100 rounded-lg shadow-md max-w-lg mx-auto my-8">
+            <h1 className="text-2xl font-bold">
                 Survey Lists
             </h1>
-            {completeSurveys.map((survey, index) => {
-                return (
-                    <div key={index} style={{ marginBottom: "18px", padding: "4px 8px" }}>
-                        <p className="text-base font-medium mb-2">
-                            Survey Name:
-                        </p>
-                        {survey.surveyName}
-                        <br />
-                        <p className="text-base font-medium mb-2">
-                            Survey Questions:
-                        </p>
-                        <ul className="list-disc list-inside">
-                            {survey?.surveyQuestions?.map((question, indx) => (
-                                <li key={indx} className="text-md">
-                                    {question}
-                                </li>
-                            ))}
-                        </ul>
-                        <br />
-                        <p className="text-base font-medium mb-2">
-                            Done by :
-                        </p>
-                        {survey.personName}
-                        <br />
-                    </div>
-                )
-            })}
+
+            <div>
+                {completeSurveys.map((survey, index) => {
+                    return (
+                        <section>
+                            <SurveyListItem
+                                key={index}
+                                survey={survey}
+                            />
+                        </section>
+                    )
+                })}
+            </div>
         </div>
     )
 }

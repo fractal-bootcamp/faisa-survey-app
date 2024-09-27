@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Survey from "./components/Survey";
+import SurveyForm from "./components/SurveyForm";
 import SurveyList from "./components/SurveyList";
+
 
 const serverURL = "http://localhost:3000"
 
@@ -94,7 +95,7 @@ function App() {
       <main className="flex-grow">
         {activeComponent === "survey" && (
           <section id="survey" className="mb-10">
-            <Survey
+            <SurveyForm
               surveyName={surveyName}
               surveyQuestions={surveyQuestions}
               personName={personName}
@@ -114,7 +115,6 @@ function App() {
             />
           </section>
         )}
-
       </main>
     </div>
   );

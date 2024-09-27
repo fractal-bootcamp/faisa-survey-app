@@ -9,7 +9,7 @@ interface SurveyProps {
     handleQuestionsChange: (index: number, value: string) => void
 }
 
-const Survey: React.FC<SurveyProps> = ({
+const SurveyForm: React.FC<SurveyProps> = ({
     surveyName,
     surveyQuestions,
     personName,
@@ -32,6 +32,17 @@ const Survey: React.FC<SurveyProps> = ({
                     onChange={e => handleSurveyName(e.target.value)}
                     className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 />
+                <h3 className="text-2xl font-semibold">
+                    Done by
+                </h3>
+                <input
+                    type="text"
+                    value={personName}
+                    placeholder="Enter your name"
+                    onChange={e => handlePersonName(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                />
+
                 <h3 className="text-2xl font-semibold">
                     Survey Questions
                 </h3>
@@ -57,17 +68,7 @@ const Survey: React.FC<SurveyProps> = ({
                 >
                     +
                 </button>
-
-                <h3 className="text-2xl font-semibold">
-                    Survey done by
-                </h3>
-                <input
-                    type="text"
-                    value={personName}
-                    placeholder="Enter your name"
-                    onChange={e => handlePersonName(e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                />
+                <br />
                 <button type="submit" className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-800">
                     Publish Survey
                 </button>
@@ -76,4 +77,4 @@ const Survey: React.FC<SurveyProps> = ({
     )
 }
 
-export default Survey
+export default SurveyForm

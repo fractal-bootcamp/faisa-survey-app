@@ -1,4 +1,4 @@
-interface SurveyProps {
+interface SurveyFormProps {
     surveyName: string
     surveyQuestions: string[]
     personName: string
@@ -9,7 +9,7 @@ interface SurveyProps {
     handleQuestionsChange: (index: number, value: string) => void
 }
 
-const SurveyForm: React.FC<SurveyProps> = ({
+const SurveyForm: React.FC<SurveyFormProps> = ({
     surveyName,
     surveyQuestions,
     personName,
@@ -31,6 +31,7 @@ const SurveyForm: React.FC<SurveyProps> = ({
                     placeholder="Enter survey name"
                     onChange={e => handleSurveyName(e.target.value)}
                     className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    required
                 />
                 <h3 className="text-2xl font-semibold">
                     Done by
@@ -41,6 +42,7 @@ const SurveyForm: React.FC<SurveyProps> = ({
                     placeholder="Enter your name"
                     onChange={e => handlePersonName(e.target.value)}
                     className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    required
                 />
 
                 <h3 className="text-2xl font-semibold">
@@ -57,6 +59,7 @@ const SurveyForm: React.FC<SurveyProps> = ({
                             placeholder={`Enter question ${index + 1}`}
                             onChange={(e) => handleQuestionsChange(index, e.target.value)}
                             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            required
                         />
                     </div>
                 ))}

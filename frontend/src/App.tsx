@@ -18,6 +18,7 @@ function App() {
   const [personName, setPersonName] = useState<string>("")
   const [completeSurveys, setCompleteSurveys] = useState<SurveyTypes[]>([])
   const [activeComponent, setActiveComponent] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<boolean>(false)
 
   const fetchSurveys = async () => {
     try {
@@ -50,6 +51,11 @@ function App() {
         setSurveyQuestions([])
         setPersonName("")
         fetchSurveys()
+        setSuccessMessage(true)
+        setActiveComponent(null)
+        setTimeout(() => {
+          setSuccessMessage(false)
+        }, 5000);
       })
       .catch((err) => console.error(err)
       )
@@ -64,9 +70,7 @@ function App() {
     updatedQuestions[index] = value
     setSurveyQuestions(updatedQuestions)
   }
-
-  const showSurvey = () => setActiveComponent("survey")
-  const showSurveyList = () => setActiveComponent("surveyList")
+  const showSurveyForm = () => setActiveComponent("survey")
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -76,23 +80,20 @@ function App() {
         </h1>
       </header>
 
-      <nav className="flex justify-center space-x-4">
-        <button
-          className="bg-slate-500 text-white px-8 py-2 rounded-full hover:bg-slate-700"
-          onClick={showSurvey}
-        >
-          Create Survey
-        </button>
-
-        <button
-          className="bg-slate-500 text-white px-8 py-2 rounded-full hover:bg-slate-700"
-          onClick={showSurveyList}
-        >
-          Survey List
-        </button>
-      </nav>
-
       <main className="flex-grow">
+        {successMessage && (
+          <div className="bg-green-200 text-green-700 p-8 mb-4 rounded-md text-center">
+            Survey submitted successfully
+          </div>
+        )}
+
+        <section id="surveyList" className="mb-10">
+          <SurveyList
+            completeSurveys={completeSurveys}
+            handleCreateNewSurvey={showSurveyForm}
+          />
+        </section>
+
         {activeComponent === "survey" && (
           <section id="survey" className="mb-10">
             <SurveyForm
@@ -104,14 +105,6 @@ function App() {
               handleAddQuestion={handleAddQuestion}
               handleFormSubmit={handleFormSubmit}
               handleQuestionsChange={handleQuestionsChange}
-            />
-          </section>
-        )}
-
-        {activeComponent === "surveyList" && (
-          <section id="surveyList" className="mb-10">
-            <SurveyList
-              completeSurveys={completeSurveys}
             />
           </section>
         )}

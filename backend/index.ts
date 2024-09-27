@@ -11,9 +11,10 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json())
 app.use(cors());
 
+
 // In-memory storage for surveys
 let surveys: { surveyName: string; surveyQuestions: string[]; personName: string }[] = [];
-let surveySubmission: { surveyAnswer: string[] }[] = []
+let surveySubmission: { personName: string, surveyAnswer: string[] }[] = []
 
 app.get("/", (_req, res) => {
   res.send("<h1>I am alive</h1>")
@@ -47,9 +48,9 @@ app.post("/new/surveys", (req, res) => {
 
 app.post("/new/surveys/submissions", (req, res) => {
   console.log(req.body)
-  const { surveyAnswer } = req.body
+  const { personName, surveyAnswer } = req.body
 
-  surveySubmission.push({ surveyAnswer })
+  surveySubmission.push({ personName, surveyAnswer })
 
   res.redirect("/")
 })
